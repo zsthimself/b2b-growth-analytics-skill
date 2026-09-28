@@ -1,0 +1,191 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <title>{{ brand_name }} 独立站与广告出海操盘报告 ({{ start_date }} ~ {{ end_date }})</title>
+  <style>
+    :root {
+      --bg: #f8fafc;
+      --card-bg: #ffffff;
+      --text: #0f172a;
+      --muted: #64748b;
+      --border: #e2e8f0;
+      --primary: #0284c7;
+      --success: #10b981;
+      --previous: #cbd5e1;
+      --accent: #6366f1;
+    }
+    * { box-sizing: border-box; margin: 0; padding: 0; font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif; }
+    body { background-color: var(--bg); color: var(--text); padding: 32px 24px; line-height: 1.5; }
+    .container { max-width: 1100px; margin: 0 auto; }
+    header { margin-bottom: 28px; border-bottom: 2px solid var(--border); padding-bottom: 16px; display: flex; justify-content: space-between; align-items: flex-end; }
+    h1 { font-size: 24px; font-weight: 700; color: #0f172a; }
+    .subtitle { color: var(--muted); font-size: 14px; margin-top: 4px; }
+    .kpi-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 16px; margin-bottom: 28px; }
+    .kpi-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 18px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+    .kpi-label { font-size: 13px; color: var(--muted); font-weight: 500; }
+    .kpi-value { font-size: 26px; font-weight: 700; margin: 8px 0; color: #0284c7; }
+    .kpi-sub { font-size: 12px; color: var(--muted); }
+    .section-card { background: var(--card-bg); border: 1px solid var(--border); border-radius: 8px; padding: 22px; margin-bottom: 24px; box-shadow: 0 1px 3px rgba(0,0,0,0.05); }
+    h2 { font-size: 17px; font-weight: 600; margin-bottom: 16px; color: #1e293b; border-left: 4px solid var(--primary); padding-left: 10px; }
+    
+    /* Comparison Bar Chart (Pure CSS) */
+    .compare-container { display: flex; gap: 32px; justify-content: space-around; margin: 24px 0 16px 0; }
+    .compare-group { display: flex; flex-direction: column; align-items: center; width: 140px; }
+    .bar-wrapper { display: flex; align-items: flex-end; gap: 8px; height: 140px; margin-bottom: 8px; }
+    .bar { width: 36px; border-radius: 4px 4px 0 0; display: flex; justify-content: center; align-items: flex-start; padding-top: 4px; font-size: 11px; font-weight: 600; color: #fff; transition: height 0.3s; }
+    .bar-prev { background-color: var(--previous); color: #475569; }
+    .bar-curr { background-color: var(--success); }
+    .bar-title { font-size: 13px; font-weight: 600; color: var(--text); }
+    .bar-legend { display: flex; justify-content: center; gap: 20px; font-size: 12px; color: var(--muted); margin-bottom: 12px; }
+    .dot { width: 10px; height: 10px; display: inline-block; border-radius: 2px; margin-right: 4px; }
+    
+    /* Distribution Bar */
+    .dist-row { margin-bottom: 12px; }
+    .dist-header { display: flex; justify-content: space-between; font-size: 13px; margin-bottom: 4px; font-weight: 500; }
+    .progress-bar-bg { height: 12px; background: #f1f5f9; border-radius: 6px; overflow: hidden; }
+    .progress-bar-fill { height: 100%; background: linear-gradient(90deg, #0284c7, #38bdf8); border-radius: 6px; }
+
+    /* Tables */
+    table { width: 100%; border-collapse: collapse; font-size: 13px; margin-top: 10px; }
+    th, td { text-align: left; padding: 10px 12px; border-bottom: 1px solid var(--border); }
+    th { background: #f8fafc; color: #475569; font-weight: 600; }
+    tr:hover { background-color: #f8fafc; }
+    .tag { display: inline-block; padding: 2px 6px; border-radius: 4px; font-size: 11px; font-weight: 600; }
+    .tag-blue { background: #e0f2fe; color: #0369a1; }
+    .tag-green { background: #dcfce7; color: #15803d; }
+
+    @media print {
+      body { background: #fff; padding: 0; }
+      .container { max-width: 100%; }
+      .section-card { box-shadow: none; border: 1px solid #ccc; page-break-inside: avoid; }
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <header>
+      <div>
+        <h1>{{ brand_name }} 独立站与出海广告操盘看板</h1>
+        <div class="subtitle">统计周期: {{ start_date }} 至 {{ end_date }} | 数据源: Google Ads API & GA4 & 真实业务台账</div>
+      </div>
+      <div style="font-size: 12px; color: var(--muted); text-align: right;">
+        状态: <span class="tag tag-green">稳定受控</span><br>
+        生成时间: {{ generated_at }}
+      </div>
+    </header>
+
+    <!-- Top KPI Cards -->
+    <div class="kpi-grid">
+      <div class="kpi-card">
+        <div class="kpi-label">广告总花费</div>
+        <div class="kpi-value">${{ total_cost }}</div>
+        <div class="kpi-sub">日均约 ${{ daily_avg_cost }}</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">累计有效点击 (CPC)</div>
+        <div class="kpi-value">{{ total_clicks }} 次</div>
+        <div class="kpi-sub">平均每次点击: ${{ avg_cpc }}</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">真实有效海外询盘</div>
+        <div class="kpi-value" style="color: #10b981;">{{ valid_leads }} 笔</div>
+        <div class="kpi-sub">全渠道意向线索总数: {{ raw_leads }}</div>
+      </div>
+      <div class="kpi-card">
+        <div class="kpi-label">综合获客成本 (CPL)</div>
+        <div class="kpi-value" style="color: #6366f1;">${{ cpl_usd }}</div>
+        <div class="kpi-sub">折合人民币约 ¥{{ cpl_cny }} / 个</div>
+      </div>
+    </div>
+
+    <!-- Campaigns Breakdown -->
+    <div class="section-card">
+      <h2>各广告系列表现明细</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>广告系列</th>
+            <th>状态</th>
+            <th>渠道类型</th>
+            <th>花费 (USD)</th>
+            <th>点击次数</th>
+            <th>展示次数</th>
+            <th>平均 CPC</th>
+            <th>点击率 (CTR)</th>
+            <th>主要转化</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for camp in campaigns %}
+          <tr>
+            <td style="font-weight: 600;">{{ camp.campaign_name }}</td>
+            <td><span class="tag tag-blue">{{ camp.status }}</span></td>
+            <td>{{ camp.channel_type }}</td>
+            <td>${{ camp.cost }}</td>
+            <td>{{ camp.clicks }}</td>
+            <td>{{ camp.impressions }}</td>
+            <td>${{ camp.cpc }}</td>
+            <td>{{ camp.ctr }}</td>
+            <td style="font-weight: 600; color: #10b981;">{{ camp.conversions }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Search Terms Audit Preview -->
+    <div class="section-card">
+      <h2>核心搜索词与意向审计 (Top 15)</h2>
+      <table>
+        <thead>
+          <tr>
+            <th>搜索词 (Search Term)</th>
+            <th>广告系列</th>
+            <th>花费 ($)</th>
+            <th>点击</th>
+            <th>展示</th>
+            <th>CPC</th>
+            <th>转化</th>
+          </tr>
+        </thead>
+        <tbody>
+          {% for term in top_terms %}
+          <tr>
+            <td style="font-family: monospace; font-size: 12px;">{{ term.search_term }}</td>
+            <td>{{ term.campaign_name }}</td>
+            <td>${{ term.cost }}</td>
+            <td>{{ term.clicks }}</td>
+            <td>{{ term.impressions }}</td>
+            <td>${{ term.cpc }}</td>
+            <td>{{ term.conversions }}</td>
+          </tr>
+          {% endfor %}
+        </tbody>
+      </table>
+    </div>
+
+    <!-- Lead Distribution (Ground Truth) -->
+    {% if lead_channels %}
+    <div class="section-card">
+      <h2>真实业务询盘渠道分布</h2>
+      {% for ch, cnt in lead_channels.items() %}
+      <div class="dist-row">
+        <div class="dist-header">
+          <span>{{ ch }}</span>
+          <span>{{ cnt }} 笔</span>
+        </div>
+        <div class="progress-bar-bg">
+          <div class="progress-bar-fill" style="width: {{ (cnt / valid_leads * 100)|round(1) }}%;"></div>
+        </div>
+      </div>
+      {% endfor %}
+    </div>
+    {% endif %}
+
+    <footer style="margin-top: 30px; text-align: center; font-size: 12px; color: var(--muted);">
+      Powered by B2B Growth Analytics Skill | Automated Output
+    </footer>
+  </div>
+</body>
+</html>

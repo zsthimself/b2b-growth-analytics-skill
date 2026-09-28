@@ -1,0 +1,41 @@
+# Byte-compiled / optimized / DLL files
+__pycache__/
+*.py[cod]
+*$py.class
+
+# Environments & dependencies
+.env
+.venv/
+venv/
+ENV/
+env/
+
+# Sensitive Google OAuth credentials & secrets (NEVER COMMIT!)
+*client_secret*.json
+*token*.json
+token.json
+developer-token.txt
+*.key
+*.pem
+credentials/
+secrets/
+.secrets/
+
+# Runtime data, logs, reports and snapshots
+data/
+snapshots/
+reports/
+logs/
+*.log
+*.tmp
+*.csv
+*.xlsx
+*.pdf
+
+# IDE & OS files
+.idea/
+.vscode/
+*.swp
+*.swo
+.DS_Store
+Thumbs.db
